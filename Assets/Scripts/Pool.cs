@@ -86,7 +86,7 @@ public class Pool : MonoBehaviour
             //vergeet dit niet weer te verwijderen als je het doet, anders gaat het voor error zorgen.
             enemy.OnDie += OnEnemyDead;
             /*
-                d
+
                 use enemy here
 
             */

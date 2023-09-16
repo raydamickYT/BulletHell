@@ -14,7 +14,7 @@ public interface IGameObjectCommand
     //opzetten van de concrete command
     void Execute();
 }
-public class InputHandler : MonoBehaviour
+public class InputHandler
 {
     private IGameObjectCommand Ycommand;
     private IGameObjectCommand Xcommand;

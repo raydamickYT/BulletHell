@@ -13,13 +13,16 @@ public class Test : MonoBehaviour
     void Start()
     {
         inputHandler = new InputHandler(new FireGunCommand(), new TestMessage());
-        command = inputHandler.HandleInput();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //command.Execute();
-        Debug.Log(command);
+        command = inputHandler.HandleInput();
+
+        if (command != null)
+        {
+            command.Execute();
+        }
     }
 }
