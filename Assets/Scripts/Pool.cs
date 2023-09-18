@@ -5,36 +5,40 @@ using System;
 
 public interface IPoolable
 {
-    bool Active { get; set; }
+    GameObject GameObject { get; set; }
     void onEnableObject();
     void onDisableObject();
 }
 
-public class ObjectPool<T> where T : IPoolable
+public class ObjectPool<gameobject> where gameobject : IPoolable
 {
-    private List<T> _activePool = new List<T>();
-    private List<T> _inactivePool = new List<T>();
+    private List<GameObject> _activePool = new List<GameObject>();
+    private List<GameObject> _inactivePool = new List<GameObject>();
 
     //als deze functie wordt aangeroepen dan wordt er een nieuwe instance gemaakt van een aangegeven type (wordt bepaald als je de functie roept)
-    private T AddNewItemToPool()
+    private GameObject AddNewItemToPool()
     {
-        T instance = (T)Activator.CreateInstance(typeof(T));
-        _inactivePool.Add(instance);
-        UnityEngine.Debug.Log("new item added to pool");
-        return instance;
+        GameObject LastAdded = null;
+        foreach (var kvp in GameManager.GameObjectsInScene)
+        {
+            LastAdded = kvp.Value;
+            _inactivePool.Add(LastAdded);
+            LastAdded.gameObject.SetActive(false);
+        }
+        return LastAdded;
     }
 
     //als een item geactiveerd wordt, dan verwijderd deze functie de item van de pool en voegt hij hem toe aan de active pool
-    public T ActivateItem(T item)
+    public gameobject ActivateItem(gameobject item)
     {
         item.onEnableObject();
-        item.Active = true;
-        if (_inactivePool.Contains(item))
+        item.GameObject.SetActive(true);
+        if (_inactivePool.Contains(item.GameObject))
         {
-            _inactivePool.Remove(item);
+            _inactivePool.Remove(item.GameObject);
 
         }
-        _activePool.Add(item);
+        _activePool.Add(item.GameObject);
 
         return item;
     }
@@ -74,7 +78,7 @@ public class Pool : MonoBehaviour
     {
         _enemyPool = new ObjectPool<Enemy>();
     }
-    
+
 
     // Update is called once per frame
     void Update()

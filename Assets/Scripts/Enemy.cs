@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Unity.VisualScripting;
 
 public class Enemy : IPoolable
 {
     //iedere keer dat dit wordt aangeroepen
-    public bool Active { get; set; }
+    public GameObject GameObject {get; set;}
 
     public event Action<Enemy> OnDie;
 
-//deze functie checkt of "ondie" event niet null is met de ?. daarna
+    //deze functie checkt of "ondie" event niet null is met de ?. daarna
     public void Die()
     {
         OnDie?.Invoke(this);
@@ -26,5 +27,36 @@ public class Enemy : IPoolable
     public void onEnableObject()
     {
         Debug.Log("Object enabled and moved to different spot");
+    }
+}
+
+//concrete command
+public class FireGunCommand : ICommand
+{
+    //dit is de uitvoering van de concrete command
+    public void Execute()
+    {
+        FireGun();
+    }
+
+    public void FireGun()
+    {
+        Debug.Log("gun fired");
+    }
+}
+
+public class TestMessage : ICommand
+{
+    public void Execute()
+    {
+        Message();
+
+    }
+
+    public void Message()
+    {
+        GameManager.GameObjectsInScene.TryGetValue("player", out GameObject Player);
+
+        Debug.Log("dit is de player positie: " + Player.transform.position);
     }
 }

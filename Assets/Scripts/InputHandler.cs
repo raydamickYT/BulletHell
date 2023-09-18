@@ -41,15 +41,6 @@ public class InputHandler
         var items = keyCommands.FindAll(x => x.key == keyCode);
         items.ForEach(x => keyCommands.Remove(x));
     }
-
-    // public IGameObjectCommand HandleInput()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.Y)) { return Ycommand; }
-    //     if (Input.GetKeyDown(KeyCode.X)) { return Xcommand; }
-    //     // if (Input.GetKeyDown(KeyCode.A)) { Acommand.Execute(); };
-    //     // if (Input.GetKeyDown(KeyCode.B)) { Bcommand.Execute(); };
-    //     return null;
-    // }
 }
 
 public class KeyCommand
@@ -59,32 +50,5 @@ public class KeyCommand
 }
 
 
-//concrete command
-public class FireGunCommand : ICommand
-{
-    //dit is de uitvoering van de concrete command
-    public void Execute()
-    {
-        FireGun();
-    }
 
-    public void FireGun()
-    {
-        Debug.Log("gun fired");
-    }
-}
-
-public class TestMessage : ICommand
-{
-    public void Execute()
-    {
-        Message();
-
-    }
-
-    public void Message()
-    {
-        Debug.Log("test message");
-    }
-}
 
