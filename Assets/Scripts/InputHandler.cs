@@ -18,7 +18,7 @@ public class InputHandler
     {
         foreach (var keyCommand in keyCommands)
         {
-            if (Input.GetKeyDown(keyCommand.key))
+            if (Input.GetKey(keyCommand.key))
             {
                 keyCommand.command.Execute();
             }
