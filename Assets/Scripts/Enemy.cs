@@ -3,36 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
-// public class Enemy : IPoolable
-// {
-//     //iedere keer dat dit wordt aangeroepen
-//     public GameObject GameObject {get; set;}
+public class Enemy
+{
 
-//     public event Action<Enemy> OnDie;
-
-//     //deze functie checkt of "ondie" event niet null is met de ?. daarna
-//     public void Die()
-//     {
-//         OnDie?.Invoke(this);
-//     }
-
-//     public void onDisableObject()
-//     {
-//         Debug.Log("object disabled and moved to different spot");
-//         //hier wordt het event weer geleegd.
-//         OnDie = null;
-//     }
-
-//     public void onEnableObject()
-//     {
-//         Debug.Log("Object enabled and moved to different spot");
-//     }
-// }
-
+}
 //concrete command
 public class FireGunCommand : ICommand
 {
+    private GameManager manager;
+    public FireGunCommand(GameManager manager)
+    {
+        this.manager = manager;
+    }
     //dit is de uitvoering van de concrete command
     public void Execute()
     {
@@ -42,6 +26,13 @@ public class FireGunCommand : ICommand
     public void FireGun()
     {
         Debug.Log("gun fired");
+        GameObject bullet = manager.GetPooledObjects();
+
+        if(bullet != null){
+            //set position
+            //bullet.transform.position = 
+            bullet.SetActive(true);
+        }
     }
 }
 
@@ -60,7 +51,7 @@ public class TestMessage : ICommand
 
     public void Message()
     {
-        manager.InstantiadedObjects.TryGetValue("player", out GameObject Player);
+        manager.InstantiatedObjects.TryGetValue("player", out GameObject Player);
 
         Debug.Log("dit is de player positie: " + Player.transform.position);
     }
