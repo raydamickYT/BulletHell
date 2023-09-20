@@ -1,52 +1,63 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 //scirpt voor het maken van de game objecten
-public class InstantiateGameObjects
+public class InstantiateGameObjects : State<GameManager>
 {
+    protected FSM<GameManager> owner;
     //dependency injection (dit geval met de gamemanager monobehaviour)
-    private GameManager manager;
-    public InstantiateGameObjects(GameManager manager)
+    public InstantiateGameObjects(FSM<GameManager> _owner)
     {
-        this.manager = manager;
+        owner = _owner;
     }
 
-    public void InstantiateObjects()
+    public override void OnEnter()
     {
+        Debug.Log(owner.pOwner.PreFab);
         //voeg gameobjecten toe aan je dictionary
-        manager.PrefabLibrary.Add("player", manager.PreFab);
+        owner.pOwner.PrefabLibrary.Add("player", owner.pOwner.player.PlayerObject);
         //manager.PrefabLibrary.Add("Bullet", manager.PreFab);
 
         //voeg bullets toe aan de dictionary
-        for (int i = 0; i < manager.AmountToPool; i++)
+        for (int i = 0; i < owner.pOwner.AmountToPool; i++)
         {
-            manager.PrefabLibrary.Add("Bullet" + i.ToString(), manager.PreFab);
+            owner.pOwner.PrefabLibrary.Add("Bullet" + i.ToString(), owner.pOwner.bullets.BulletObject);
         }
         //manager.PrefabLibrary.Add("enemy", manager.PreFab);
 
         //instantiaten van alle objecten in de dictionary
-        foreach (var kvp in manager.PrefabLibrary)
+        //kvp staat voor keyvaluepair you stoopid
+        foreach (var kvp in owner.pOwner.PrefabLibrary)
         {
-            Vector3 testPos = new Vector3(0, 0, 0);
+            Vector3 startPos = new Vector3(0, 0, 0);
             //check welk object er gespawned wordt en verander de positie afhankelijk van andere objecten
             if (kvp.Key == "player")
             {
-                testPos = new Vector3(0, -4.4f, 0);
+                startPos = new Vector3(0, -4.4f, 0);
+            }
+            if (kvp.Key.StartsWith("Bullet"))
+            {
+                GameObject test = owner.pOwner.InstantiatedObjects["player"];
+                Debug.Log(test.transform.position.y);
+                startPos = test.transform.position;
             }
 
-            GameObject instantiatedObject = GameObject.Instantiate(kvp.Value, testPos, Quaternion.identity);
+            GameObject instantiatedObject = GameObject.Instantiate(kvp.Value, startPos, Quaternion.identity);
             instantiatedObject.name = kvp.Key; // optioneel, maar netjes: verander de naam van het gameobject in de wereld naar de kvp waarde(string)
 
             //doe wat logic om de bullets inactive te maken en toe te voegen aan de object pool.
-            if(kvp.Key.StartsWith("Bullet")){
+            if (kvp.Key.StartsWith("Bullet"))
+            {
                 instantiatedObject.SetActive(false);
-                manager.InactivePooledObjects.Add(instantiatedObject);
+                owner.pOwner.InactivePooledObjects.Add(instantiatedObject);
             }
 
             //hier de instantiated object toevoegden aan de library
-            manager.InstantiatedObjects.Add(kvp.Key, instantiatedObject);
+            owner.pOwner.InstantiatedObjects.Add(kvp.Key, instantiatedObject);
         }
     }
 }
