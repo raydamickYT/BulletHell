@@ -9,6 +9,8 @@ using System;
 public interface ICommand
 {
     void Execute();
+    void OnKeyDownExecute();
+    void OnKeyUpExecute();
 }
 public class InputHandler
 {
@@ -18,6 +20,14 @@ public class InputHandler
     {
         foreach (var keyCommand in keyCommands)
         {
+            if (Input.GetKeyDown(keyCommand.key))
+            {
+                keyCommand.command.OnKeyDownExecute();
+            }
+            if (Input.GetKeyUp(keyCommand.key))
+            {
+                keyCommand.command.OnKeyUpExecute();
+            }
             if (Input.GetKey(keyCommand.key))
             {
                 keyCommand.command.Execute();

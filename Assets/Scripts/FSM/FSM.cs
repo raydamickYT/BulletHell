@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class FSM<T>
@@ -25,6 +26,7 @@ public class FSM<T>
 
     public void Update()
     {
+
         //de update functie binnen de states is een override functie die werkt als hij wordt aangeroepen.
         currentState?.OnUpdate();
     }
@@ -33,6 +35,7 @@ public class FSM<T>
     {
         currentState?.OnExit();
         currentState = allStates[_type];
+        //Debug.Log(_type);
         currentState?.OnEnter();
     }
     

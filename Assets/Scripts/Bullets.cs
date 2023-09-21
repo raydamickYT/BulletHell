@@ -7,9 +7,5 @@ using UnityEngine;
 public class Bullets : ScriptableObject
 {
     public GameObject BulletObject;
-}
-[CreateAssetMenu(fileName = "Player", menuName = "ScriptableObjects/PlayersData", order = 2)]
-public class Player : ScriptableObject
-{
-    public GameObject PlayerObject;
+    public float BulletSpeed = 100f;
 }

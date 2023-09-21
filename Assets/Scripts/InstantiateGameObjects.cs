@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 //scirpt voor het maken van de game objecten
@@ -15,11 +16,12 @@ public class InstantiateGameObjects : State<GameManager>
         owner = _owner;
     }
 
+    //dit is hetzelfde als een awakefunctie en wordt aangeroepen vannuit de StateMachine.
+    //omdat deze class alleen geroepen wordt aan het begin wanneer de game opstart, heb ik nu alleen de OnEnter method hier.
     public override void OnEnter()
     {
-        Debug.Log(owner.pOwner.PreFab);
         //voeg gameobjecten toe aan je dictionary
-        owner.pOwner.PrefabLibrary.Add("player", owner.pOwner.player.PlayerObject);
+        owner.pOwner.PrefabLibrary.Add("player", owner.pOwner.PreFab);
         //manager.PrefabLibrary.Add("Bullet", manager.PreFab);
 
         //voeg bullets toe aan de dictionary
@@ -42,7 +44,6 @@ public class InstantiateGameObjects : State<GameManager>
             if (kvp.Key.StartsWith("Bullet"))
             {
                 GameObject test = owner.pOwner.InstantiatedObjects["player"];
-                Debug.Log(test.transform.position.y);
                 startPos = test.transform.position;
             }
 
@@ -59,5 +60,18 @@ public class InstantiateGameObjects : State<GameManager>
             //hier de instantiated object toevoegden aan de library
             owner.pOwner.InstantiatedObjects.Add(kvp.Key, instantiatedObject);
         }
+        owner.SwitchState(typeof(IdleState));
     }
+}
+
+public class IdleState : State<GameManager>
+{
+    public FSM<GameManager> owner;
+
+    public IdleState(FSM<GameManager> _owner)
+    {
+        owner = _owner;
+    }
+
+    //dit is de idle state, doe hier iets als de speler niets doet.
 }
