@@ -29,14 +29,13 @@ public class FireGunCommand : State<GameManager>, ICommand
     }
 
     //deze word constant gecalled terwijl de key naar beneden is
-    public void Execute()
+    public void Execute(KeyCode key, object context = null)
     {
-        FireGun();
+        FireGun(context);
     }
 
-    public void FireGun()
+    public void FireGun(object context = null)
     {
-        Debug.Log(owner);
         GameObject bullet = owner.pOwner.objectPoolDelegate?.Invoke();
 
         if (bullet != null && _canFire)
@@ -49,9 +48,9 @@ public class FireGunCommand : State<GameManager>, ICommand
             bullet.SetActive(true);
 
             Rigidbody rb = bullet.gameObject.GetComponent<Rigidbody>();
-            if (rb != null)
+            if (rb != null && context is MovementContext movementContext)
             {
-                rb.velocity = bullet.transform.up * owner.pOwner.bullets.BulletSpeed; //bulletspeed is te veranderen in de scriptable object
+                rb.velocity = movementContext.Direction.normalized * owner.pOwner.bullets.BulletSpeed; //bulletspeed is te veranderen in de scriptable object
             }
 
             //logic voor fire rate en bullet life
@@ -84,9 +83,15 @@ public class PlayerMovement : State<GameManager>, ICommand
         owner = _owner;
     }
 
-    public void Execute()
+    public void Execute(KeyCode key, object context = null)
     {
-        
+        GameObject player = owner.pOwner.InstantiatedObjects["player"].gameObject;
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+
+        if (rb != null && context is MovementContext movementContext)
+        {
+            rb.velocity = movementContext.Direction.normalized * 10f; //bulletspeed is te veranderen in de scriptable object
+        }
     }
 
     public void OnKeyDownExecute()
@@ -95,5 +100,8 @@ public class PlayerMovement : State<GameManager>, ICommand
 
     public void OnKeyUpExecute()
     {
+        GameObject player = owner.pOwner.InstantiatedObjects["player"].gameObject;
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+        rb.velocity = new Vector3(0,0,0);
     }
 }

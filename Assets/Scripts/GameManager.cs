@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -59,8 +57,14 @@ public class GameManager : MonoBehaviour
 
 
         //deze line zorgt ervoor dat er een key wordt gebind aan de juiste actie. de actie zit op de actor
-        inputHandler.BindInputToCommand(KeyCode.X, fireGun);
-        inputHandler.BindInputToCommand(KeyCode.Y, fireGun);
+        inputHandler.BindInputToCommand(KeyCode.X, fireGun, new MovementContext { Direction = Vector3.up });
+        inputHandler.BindInputToCommand(KeyCode.Y, fireGun, new MovementContext { Direction = Vector3.up });
+        inputHandler.BindInputToCommand(KeyCode.W, playerMovement, new MovementContext { Direction = Vector3.up });
+        inputHandler.BindInputToCommand(KeyCode.A, playerMovement, new MovementContext { Direction = Vector3.left });
+        inputHandler.BindInputToCommand(KeyCode.S, playerMovement, new MovementContext { Direction = Vector3.down });
+        inputHandler.BindInputToCommand(KeyCode.D, playerMovement, new MovementContext { Direction = Vector3.right });
+
+
 
         //subscribe wat functies aan de delegates (beetje nutteloos, haal niks uit de delegates)
         DeactivationDelegate += DeActivate;
