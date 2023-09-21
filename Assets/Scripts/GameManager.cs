@@ -7,8 +7,6 @@ public class GameManager : MonoBehaviour
     FSM<GameManager> fsm;
     #region Adjustable Variables
     public int AmountToPool = 30;
-    public float FireRate = .5f, BulletLife = 1;
-
     #endregion
 
     #region Delegates

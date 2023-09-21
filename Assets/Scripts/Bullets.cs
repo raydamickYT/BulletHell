@@ -7,5 +7,5 @@ using UnityEngine;
 public class Bullets : ScriptableObject
 {
     public GameObject BulletObject;
-    public float BulletSpeed = 100f;
+    public float BulletSpeed = 100f, FireRate = .5f, BulletLife = 1;
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Unity.VisualScripting;
 
 //concrete command
 public class FireGunCommand : State<GameManager>, ICommand
@@ -63,30 +64,35 @@ public class FireGunCommand : State<GameManager>, ICommand
     {
         //vrij simpel, we zorgen dat de speler even niet meer kan schieten en dan na een bepaalde tijd kan de speler weer schieten
         _canFire = false;
-        yield return new WaitForSeconds(owner.pOwner.FireRate); //FireRate kan je in de "GameManager" aanpassen, kleiner getal = sneller schieten.
+        yield return new WaitForSeconds(owner.pOwner.bullets.FireRate); //FireRate kan je in de "GameManager" aanpassen, kleiner getal = sneller schieten.
         _canFire = true;
     }
 
     public IEnumerator BulletLifeTime(GameObject bullet)
     {
         //net zo simpel, als er een bepaalde tijd verstreken is, dan word de bullet weer naar de inactive pool verplaatst.
-        yield return new WaitForSeconds(owner.pOwner.BulletLife); //bulletlife kan je in de "GameManager" aanpassen.
+        yield return new WaitForSeconds(owner.pOwner.bullets.BulletLife); //bulletlife kan je in de "GameManager" aanpassen.
         owner.pOwner.DeactivationDelegate?.Invoke(bullet);
     }
 }
 
 public class PlayerMovement : State<GameManager>, ICommand
 {
+    Rigidbody rb;
     protected FSM<GameManager> owner;
     public PlayerMovement(FSM<GameManager> _owner)
     {
         owner = _owner;
     }
 
-    public void Execute(KeyCode key, object context = null)
+    public override void OnEnter()
     {
         GameObject player = owner.pOwner.InstantiatedObjects["player"].gameObject;
-        Rigidbody rb = player.GetComponent<Rigidbody>();
+        rb = player.GetComponent<Rigidbody>();
+    }
+
+    public void Execute(KeyCode key, object context = null)
+    {
 
         if (rb != null && context is MovementContext movementContext)
         {
@@ -96,12 +102,13 @@ public class PlayerMovement : State<GameManager>, ICommand
 
     public void OnKeyDownExecute()
     {
+        owner.SwitchState(typeof(PlayerMovement));
     }
 
     public void OnKeyUpExecute()
     {
-        GameObject player = owner.pOwner.InstantiatedObjects["player"].gameObject;
-        Rigidbody rb = player.GetComponent<Rigidbody>();
-        rb.velocity = new Vector3(0,0,0);
+        rb.velocity = new Vector3(0, 0, 0);
+
+        owner.SwitchState(typeof(IdleState));
     }
 }
